@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a472a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chips">
+  <meta name="description" content="Golf Chips Scorer - Track your golf gambling chips and settle up easily">
+  <title>Golf Chips Scorer</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%231a472a'/%3E%3Ccircle cx='256' cy='220' r='60' fill='white' opacity='0.9'/%3E%3Ctext x='256' y='360' text-anchor='middle' fill='%23d4af37' font-family='system-ui' font-size='72' font-weight='800'%3ECHIPS%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%231a472a'/%3E%3Ccircle cx='256' cy='220' r='60' fill='white' opacity='0.9'/%3E%3Ctext x='256' y='360' text-anchor='middle' fill='%23d4af37' font-family='system-ui' font-size='72' font-weight='800'%3ECHIPS%3C/text%3E%3C/svg%3E">
+<style>
+:root {
+  --color-primary: #1a472a;
+  --color-secondary: #2d6a4f;
+  --color-accent: #d4af37;
+  --color-light-bg: #f0f4f0;
+  --color-white: #ffffff;
+  --color-dark-text: #1a1a2e;
+  --color-subtle-text: #6b7280;
+  --color-positive: #059669;
+  --color-negative: #dc2626;
+  --color-card-bg: #ffffff;
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --transition-fast: 0.2s ease;
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font-family);background-color:var(--color-light-bg);color:var(--color-dark-text);line-height:1.5;min-height:100vh;max-width:480px;margin:0 auto;padding:16px}
+button,input{font-family:inherit;font-size:inherit}
+.screen{display:none}.screen.active{display:block;animation:fadeIn .25s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.setup-container{padding-top:32px}
+.setup-header{text-align:center;margin-bottom:32px}
+.app-title{font-size:2.2rem;font-weight:800;color:var(--color-primary);letter-spacing:-0.02em}
+.app-tagline{font-size:0.9rem;color:var(--color-subtle-text);margin-top:4px}
+.form-group{background:var(--color-card-bg);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:16px 20px;margin-bottom:12px}
+.form-label{display:block;font-size:0.8rem;font-weight:700;color:var(--color-subtle-text);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px}
+.player-count-selector{display:flex;background:var(--color-light-bg);border-radius:var(--radius-btn);padding:3px;gap:3px}
+.count-btn{flex:1;text-align:center;padding:10px 0;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-size:1rem;color:var(--color-subtle-text);background:transparent;transition:background-color var(--transition-fast),color var(--transition-fast)}
+.count-btn.selected{background:var(--color-primary);color:var(--color-white);box-shadow:0 1px 4px rgba(26,71,42,0.3)}
+.player-name-input{width:100%;padding:12px 16px;border:1.5px solid #d1d5db;border-radius:var(--radius-btn);font-size:1rem;color:var(--color-dark-text);background:var(--color-white);transition:border-color var(--transition-fast),box-shadow var(--transition-fast);outline:none;margin-bottom:8px}
+.player-name-input:last-of-type{margin-bottom:0}
+.player-name-input:focus{border-color:var(--color-secondary);box-shadow:0 0 0 3px rgba(45,106,79,0.15)}
+.player-name-input::placeholder{color:#9ca3af}
+.chip-value-input{width:100%;padding:12px 16px;border:1.5px solid #d1d5db;border-radius:var(--radius-btn);font-size:1rem;color:var(--color-dark-text);background:var(--color-white);transition:border-color var(--transition-fast),box-shadow var(--transition-fast);outline:none}
+.chip-value-input:focus{border-color:var(--color-secondary);box-shadow:0 0 0 3px rgba(45,106,79,0.15)}
+.setup-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.btn{display:block;width:100%;border:none;border-radius:var(--radius-btn);font-weight:700;cursor:pointer;text-align:center;transition:background-color var(--transition-fast),box-shadow var(--transition-fast),transform .1s ease}
+.btn:active{transform:scale(0.97)}
+.btn-primary{padding:14px 24px;background:var(--color-primary);color:var(--color-white);font-size:1rem}
+.btn-primary:hover{background:#1f5432;box-shadow:0 0 0 3px rgba(212,175,55,0.35)}
+.btn-secondary{padding:12px 24px;background:transparent;color:var(--color-primary);border:2px solid var(--color-primary);font-size:0.95rem}
+.btn-secondary:hover{background:var(--color-primary);color:var(--color-white)}
+.btn-icon{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:none;background:transparent;color:var(--color-primary);border-radius:50%;cursor:pointer;transition:background-color var(--transition-fast);flex-shrink:0}
+.btn-icon:hover{background:rgba(26,71,42,0.08)}
+.btn-text{border:none;background:transparent;color:var(--color-negative);font-size:0.85rem;font-weight:600;cursor:pointer;padding:8px 12px}
+.game-header{display:flex;align-items:center;gap:8px;padding:4px 0 12px}
+.game-info{display:flex;gap:12px;font-size:0.8rem;color:var(--color-subtle-text);font-weight:500;margin-left:auto}
+.player-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.player-tabs::-webkit-scrollbar{display:none}
+.player-tab{flex:1;min-width:0;padding:10px 16px;border-radius:50px;border:none;font-size:0.9rem;font-weight:600;cursor:pointer;background:#e5e7eb;color:var(--color-subtle-text);transition:background-color var(--transition-fast),color var(--transition-fast),box-shadow var(--transition-fast);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-tab.active{background:var(--color-primary);color:var(--color-white);box-shadow:0 2px 8px rgba(26,71,42,0.3)}
+.chips-area{padding-bottom:8px}
+.chips-section{margin-bottom:20px}
+.chips-section-title{display:flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-subtle-text);margin-bottom:10px}
+.chips-section-title::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%}
+.positive-title::before{background-color:var(--color-positive)}
+.negative-title::before{background-color:var(--color-negative)}
+.chips-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip-btn{display:flex;align-items:center;justify-content:center;text-align:center;padding:14px 8px;background:var(--color-white);border:1.5px solid #e5e7eb;border-radius:var(--radius-btn);font-size:0.85rem;font-weight:600;color:var(--color-dark-text);cursor:pointer;transition:background-color var(--transition-fast),color var(--transition-fast),border-color var(--transition-fast),transform .1s ease,box-shadow var(--transition-fast);user-select:none;-webkit-user-select:none;min-height:48px}
+.chip-btn:active{transform:scale(0.94)}
+.chip-btn.positive.selected{background:var(--color-positive);color:var(--color-white);border-color:var(--color-positive);box-shadow:0 2px 8px rgba(5,150,105,0.3)}
+.chip-btn.negative.selected{background:var(--color-negative);color:var(--color-white);border-color:var(--color-negative);box-shadow:0 2px 8px rgba(220,38,38,0.3)}
+.game-footer{position:sticky;bottom:0;background:var(--color-white);border-top:1px solid #e5e7eb;padding:12px 0 16px;margin:0 -16px;padding-left:16px;padding-right:16px;box-shadow:0 -2px 12px rgba(0,0,0,0.06);z-index:10}
+.running-tally{text-align:center;font-size:0.95rem;font-weight:600;color:var(--color-subtle-text);margin-bottom:10px}
+.running-tally strong{font-weight:800;font-size:1.05rem}
+.running-tally.tally-positive{color:var(--color-positive)}
+.running-tally.tally-negative{color:var(--color-negative)}
+.running-tally.tally-neutral{color:var(--color-subtle-text)}
+.settlement-header{padding:16px 0;text-align:center}
+.screen-title{font-size:1.3rem;font-weight:800;color:var(--color-primary)}
+.settlement-content{padding-bottom:16px}
+.player-summary-card{background:var(--color-card-bg);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:16px 20px;margin-bottom:10px}
+.summary-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.summary-name{font-size:1rem;font-weight:700;color:var(--color-dark-text)}
+.summary-amount{font-size:1.15rem;font-weight:800}
+.amount-positive{color:var(--color-positive)}
+.amount-negative{color:var(--color-negative)}
+.amount-neutral{color:var(--color-subtle-text)}
+.summary-chips-count{font-size:0.8rem;color:var(--color-subtle-text);margin-bottom:8px}
+.count-positive{color:var(--color-positive);font-weight:600}
+.count-negative{color:var(--color-negative);font-weight:600}
+.chip-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.chip-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:600}
+.positive-tag{background:rgba(5,150,105,0.1);color:var(--color-positive)}
+.negative-tag{background:rgba(220,38,38,0.1);color:var(--color-negative)}
+.no-chips{font-size:0.8rem;color:var(--color-subtle-text);font-style:italic}
+.owes-section{margin-top:24px}
+.owes-title{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-subtle-text);margin-bottom:10px}
+.owes-row{display:flex;align-items:center;gap:8px;background:var(--color-card-bg);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:14px 16px;margin-bottom:8px}
+.owes-from{font-weight:700;color:var(--color-negative)}
+.owes-arrow{color:var(--color-subtle-text);font-size:0.8rem;font-style:italic}
+.owes-to{font-weight:700;color:var(--color-positive)}
+.owes-amount{margin-left:auto;font-size:1.1rem;font-weight:800;color:var(--color-accent)}
+.no-payments{text-align:center;padding:24px 16px;color:var(--color-positive);font-weight:600;font-size:1rem;background:var(--color-card-bg);border-radius:var(--radius-card);box-shadow:var(--shadow-card)}
+.settlement-footer{display:flex;flex-direction:column;gap:10px;padding-top:8px;padding-bottom:24px}
+.history-header{display:flex;align-items:center;gap:8px;padding:4px 0 16px}
+.history-header .screen-title{flex:1}
+.history-header .btn-text{flex-shrink:0}
+.history-card{background:var(--color-card-bg);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:14px 18px;margin-bottom:10px;cursor:pointer;transition:box-shadow var(--transition-fast)}
+.history-card:hover{box-shadow:var(--shadow-elevated)}
+.history-summary{display:flex;flex-direction:column;gap:2px}
+.history-date{font-size:0.72rem;color:var(--color-subtle-text);font-weight:500}
+.history-players{font-size:0.95rem;font-weight:600;color:var(--color-dark-text)}
+.history-chip-value{font-size:0.78rem;color:var(--color-subtle-text)}
+.history-details{margin-top:10px;padding-top:10px;border-top:1px solid #e5e7eb;font-size:0.85rem}
+.history-details.hidden{display:none}
+.history-player-row{display:flex;justify-content:space-between;padding:3px 0}
+.history-payments-title{font-size:0.75rem;font-weight:700;color:var(--color-subtle-text);text-transform:uppercase;letter-spacing:0.04em;margin-top:8px;margin-bottom:4px}
+.history-payment-row{font-size:0.85rem;color:var(--color-dark-text);padding:2px 0}
+.history-empty{text-align:center;padding:48px 16px;color:var(--color-subtle-text)}
+.history-empty p:first-child{font-size:1rem;font-weight:600;margin-bottom:4px}
+.history-empty p:last-child{font-size:0.85rem}
+.hidden{display:none !important}
+.text-positive{color:var(--color-positive)}
+.text-negative{color:var(--color-negative)}
+</style>
+</head>
+<body>
+
+  <!-- Screen 1: Setup -->
+  <section id="setup-screen" class="screen active">
+    <div class="setup-container">
+      <header class="setup-header">
+        <h1 class="app-title">Chips</h1>
+        <p class="app-tagline">Settle your golf bets, no math required</p>
+      </header>
+
+      <div class="form-group">
+        <label class="form-label">Number of Players</label>
+        <div class="player-count-selector">
+          <button type="button" class="count-btn selected" data-count="2">2</button>
+          <button type="button" class="count-btn" data-count="3">3</button>
+          <button type="button" class="count-btn" data-count="4">4</button>
+        </div>
+      </div>
+
+      <div class="form-group" id="player-names-group">
+        <label class="form-label">Player Names</label>
+        <input type="text" id="player-1-name" class="player-name-input" placeholder="Player 1" maxlength="20">
+        <input type="text" id="player-2-name" class="player-name-input" placeholder="Player 2" maxlength="20">
+        <input type="text" id="player-3-name" class="player-name-input hidden" placeholder="Player 3" maxlength="20">
+        <input type="text" id="player-4-name" class="player-name-input hidden" placeholder="Player 4" maxlength="20">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="chip-value">Chip Value ($)</label>
+        <input type="number" id="chip-value" class="chip-value-input" value="1" min="0.25" step="0.25" max="100">
+      </div>
+
+      <div class="setup-actions">
+        <button type="button" id="start-game-btn" class="btn btn-primary">Start Game</button>
+        <button type="button" id="view-history-btn" class="btn btn-secondary">View History</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screen 2: Game / Chip Assignment -->
+  <section id="game-screen" class="screen">
+    <header class="game-header">
+      <button type="button" id="game-back-btn" class="btn-icon" aria-label="Back to setup">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="game-info">
+        <span id="game-info-players"></span>
+        <span id="game-info-chip-value"></span>
+      </div>
+    </header>
+
+    <nav class="player-tabs" id="player-tabs"></nav>
+
+    <div class="chips-area" id="chips-area">
+      <div class="chips-section">
+        <h3 class="chips-section-title positive-title">Positive Chips</h3>
+        <div class="chips-grid" id="positive-chips-grid">
+          <button type="button" class="chip-btn positive" data-chip="eagle">Eagle</button>
+          <button type="button" class="chip-btn positive" data-chip="birdie">Birdie</button>
+          <button type="button" class="chip-btn positive" data-chip="par">Par</button>
+          <button type="button" class="chip-btn positive" data-chip="one-putt">One Putt</button>
+          <button type="button" class="chip-btn positive" data-chip="long-putt">Long Putt</button>
+          <button type="button" class="chip-btn positive" data-chip="chip-in">Chip In</button>
+          <button type="button" class="chip-btn positive" data-chip="kp">KP</button>
+          <button type="button" class="chip-btn positive" data-chip="gir">GIR</button>
+          <button type="button" class="chip-btn positive" data-chip="turkey">Turkey</button>
+          <button type="button" class="chip-btn positive" data-chip="sandy">Sandy</button>
+        </div>
+      </div>
+
+      <div class="chips-section">
+        <h3 class="chips-section-title negative-title">Negative Chips</h3>
+        <div class="chips-grid" id="negative-chips-grid">
+          <button type="button" class="chip-btn negative" data-chip="lost-ball">Lost Ball</button>
+          <button type="button" class="chip-btn negative" data-chip="water">Water</button>
+          <button type="button" class="chip-btn negative" data-chip="duff-chip">Duff Chip</button>
+          <button type="button" class="chip-btn negative" data-chip="3-putt">3-Putt</button>
+          <button type="button" class="chip-btn negative" data-chip="triple-plus">Triple+</button>
+          <button type="button" class="chip-btn negative" data-chip="double">Double</button>
+          <button type="button" class="chip-btn negative" data-chip="grave-digger">Grave Digger</button>
+          <button type="button" class="chip-btn negative" data-chip="beer">Beer</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="game-footer">
+      <div class="running-tally" id="running-tally">
+        Net: <span id="tally-positive">+0</span> / <span id="tally-negative">-0</span> chips
+      </div>
+      <button type="button" id="calculate-btn" class="btn btn-primary">Calculate Settlement</button>
+    </footer>
+  </section>
+
+  <!-- Screen 3: Settlement -->
+  <section id="settlement-screen" class="screen">
+    <header class="settlement-header">
+      <h2 class="screen-title">Settlement</h2>
+    </header>
+
+    <div class="settlement-content">
+      <div class="player-summaries" id="player-summaries"></div>
+
+      <div class="owes-section">
+        <h3 class="owes-title">Who Owes Whom</h3>
+        <div id="owes-list" class="owes-list"></div>
+      </div>
+    </div>
+
+    <footer class="settlement-footer">
+      <button type="button" id="save-new-game-btn" class="btn btn-primary">Save & New Game</button>
+      <button type="button" id="back-to-chips-btn" class="btn btn-secondary">Back to Chips</button>
+    </footer>
+  </section>
+
+  <!-- Screen 4: History -->
+  <section id="history-screen" class="screen">
+    <header class="history-header">
+      <button type="button" id="history-back-btn" class="btn-icon" aria-label="Back">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <h2 class="screen-title">Game History</h2>
+      <button type="button" id="clear-history-btn" class="btn-text">Clear</button>
+    </header>
+
+    <div class="history-list" id="history-list"></div>
+
+    <div class="history-empty hidden" id="history-empty">
+      <p>No games played yet.</p>
+      <p>Start a game to see your history here.</p>
+    </div>
+  </section>
+
+<script>
+var POSITIVE_CHIPS=[{id:'eagle',name:'Eagle'},{id:'birdie',name:'Birdie'},{id:'par',name:'Par'},{id:'one-putt',name:'One Putt'},{id:'long-putt',name:'Long Putt'},{id:'chip-in',name:'Chip In'},{id:'kp',name:'KP'},{id:'gir',name:'GIR'},{id:'turkey',name:'Turkey'},{id:'sandy',name:'Sandy'}];
+var NEGATIVE_CHIPS=[{id:'lost-ball',name:'Lost Ball'},{id:'water',name:'Water'},{id:'duff-chip',name:'Duff Chip'},{id:'3-putt',name:'3-Putt'},{id:'triple-plus',name:'Triple+'},{id:'double',name:'Double'},{id:'grave-digger',name:'Grave Digger'},{id:'beer',name:'Beer'}];
+var POSITIVE_IDS=new Set(POSITIVE_CHIPS.map(function(c){return c.id}));
+var NEGATIVE_IDS=new Set(NEGATIVE_CHIPS.map(function(c){return c.id}));
+var STORAGE_KEY='golf_chips_history';
+var state={currentScreen:'setup',playerCount:2,playerNames:['','','',''],chipValue:1,activePlayerIndex:0,chips:[{},{},{},{}],history:[],lastSettlement:null};
+function $(id){return document.getElementById(id)}
+function showScreen(screenId){var screens=document.querySelectorAll('.screen');screens.forEach(function(s){s.classList.remove('active')});var target=$(screenId+'-screen');if(target)target.classList.add('active');state.currentScreen=screenId}
+function initSetup(){var countBtns=document.querySelectorAll('.count-btn');countBtns.forEach(function(btn){btn.addEventListener('click',function(){var count=parseInt(btn.dataset.count,10);state.playerCount=count;countBtns.forEach(function(b){b.classList.remove('selected')});btn.classList.add('selected');updatePlayerNameInputs(count)})});$('start-game-btn').addEventListener('click',startGame);$('view-history-btn').addEventListener('click',function(){renderHistory();showScreen('history')});updatePlayerNameInputs(state.playerCount)}
+function updatePlayerNameInputs(count){for(var i=1;i<=4;i++){var input=$('player-'+i+'-name');if(i<=count)input.classList.remove('hidden');else input.classList.add('hidden')}}
+function startGame(){var names=[];for(var i=1;i<=state.playerCount;i++){var input=$('player-'+i+'-name');var name=input.value.trim()||'Player '+i;names.push(name)}var chipValueInput=$('chip-value');var chipValue=parseFloat(chipValueInput.value);if(isNaN(chipValue)||chipValue<=0){chipValueInput.focus();return}state.playerNames=names;state.chipValue=chipValue;state.activePlayerIndex=0;state.chips=[];for(var i=0;i<state.playerCount;i++)state.chips.push({});state.lastSettlement=null;renderGameScreen();showScreen('game')}
+function renderGameScreen(){renderPlayerTabs();syncChipButtons();updateTally();updateGameInfo()}
+function updateGameInfo(){$('game-info-players').textContent=state.playerCount+' players';$('game-info-chip-value').textContent='$'+formatMoney(state.chipValue)+'/chip'}
+function renderPlayerTabs(){var c=$('player-tabs');c.innerHTML='';for(var i=0;i<state.playerCount;i++){var tab=document.createElement('button');tab.type='button';tab.className='player-tab';if(i===state.activePlayerIndex)tab.classList.add('active');tab.textContent=state.playerNames[i];tab.dataset.playerIndex=i;(function(idx){tab.addEventListener('click',function(){state.activePlayerIndex=idx;renderGameScreen()})})(i);c.appendChild(tab)}}
+function syncChipButtons(){var playerChips=state.chips[state.activePlayerIndex]||{};var allBtns=document.querySelectorAll('.chip-btn');allBtns.forEach(function(btn){var chipId=btn.dataset.chip;if(playerChips[chipId])btn.classList.add('selected');else btn.classList.remove('selected')})}
+function handleChipClick(event){var btn=event.target.closest('.chip-btn');if(!btn)return;var chipId=btn.dataset.chip;var playerChips=state.chips[state.activePlayerIndex];if(playerChips[chipId]){delete playerChips[chipId];btn.classList.remove('selected')}else{playerChips[chipId]=true;btn.classList.add('selected')}updateTally()}
+function updateTally(){var playerChips=state.chips[state.activePlayerIndex]||{};var pos=0,neg=0;for(var chipId in playerChips){if(!playerChips[chipId])continue;if(POSITIVE_IDS.has(chipId))pos++;else if(NEGATIVE_IDS.has(chipId))neg++}$('tally-positive').textContent='+'+pos;$('tally-negative').textContent='-'+neg;var net=pos-neg;var tallyEl=$('running-tally');var netAmount=net*(state.playerCount-1)*state.chipValue;var sign=netAmount>0?'+':netAmount<0?'-':'';tallyEl.innerHTML='<span id="tally-positive">+'+pos+'</span> / <span id="tally-negative">-'+neg+'</span> chips = <strong>'+sign+'$'+formatMoney(Math.abs(netAmount))+'</strong>';tallyEl.classList.remove('tally-positive','tally-negative','tally-neutral');if(net>0)tallyEl.classList.add('tally-positive');else if(net<0)tallyEl.classList.add('tally-negative');else tallyEl.classList.add('tally-neutral')}
+function initGameScreen(){$('positive-chips-grid').addEventListener('click',handleChipClick);$('negative-chips-grid').addEventListener('click',handleChipClick);$('calculate-btn').addEventListener('click',function(){var result=calculateSettlement();state.lastSettlement=result;renderSettlement(result);showScreen('settlement')});$('game-back-btn').addEventListener('click',function(){var hasAny=state.chips.some(function(pc){return Object.keys(pc).length>0});if(hasAny&&!confirm('Go back to setup? Current game data will be lost.'))return;showScreen('setup')})}
+function calculateSettlement(){var ps=[];for(var i=0;i<state.playerCount;i++){var pc=state.chips[i]||{};var posC=0,negC=0,posL=[],negL=[];for(var chipId in pc){if(!pc[chipId])continue;if(POSITIVE_IDS.has(chipId)){posC++;var ch=POSITIVE_CHIPS.find(function(c){return c.id===chipId});if(ch)posL.push(ch.name)}else if(NEGATIVE_IDS.has(chipId)){negC++;var ch=NEGATIVE_CHIPS.find(function(c){return c.id===chipId});if(ch)negL.push(ch.name)}}var netChips=posC-negC;var netAmount=netChips*(state.playerCount-1)*state.chipValue;ps.push({playerIndex:i,name:state.playerNames[i],positiveCount:posC,negativeCount:negC,positiveList:posL,negativeList:negL,netChips:netChips,netAmount:netAmount})}return{playerSummaries:ps,payments:computePayments(ps)}}
+function computePayments(playerSummaries){var balances=playerSummaries.map(function(ps){return{playerIndex:ps.playerIndex,name:ps.name,balance:ps.netAmount}});var payments=[];var EPS=0.001;var max=100;while(max-->0){var maxD=null,maxC=null;for(var i=0;i<balances.length;i++){var e=balances[i];if(e.balance<-EPS&&(!maxD||e.balance<maxD.balance))maxD=e;if(e.balance>EPS&&(!maxC||e.balance>maxC.balance))maxC=e}if(!maxD||!maxC)break;var amt=Math.min(Math.abs(maxD.balance),maxC.balance);payments.push({from:maxD.name,to:maxC.name,amount:Math.round(amt*100)/100});maxD.balance+=amt;maxC.balance-=amt}return payments}
+function renderSettlement(result){var sc=$('player-summaries');sc.innerHTML='';for(var i=0;i<result.playerSummaries.length;i++){var s=result.playerSummaries[i];var card=document.createElement('div');card.className='player-summary-card';var sign=s.netAmount>=0?'+':'-';var ac=s.netAmount>0?'amount-positive':s.netAmount<0?'amount-negative':'amount-neutral';var ch='';if(s.positiveList.length>0)ch+='<div class="chip-list positive-list">'+s.positiveList.map(function(n){return'<span class="chip-tag positive-tag">'+escapeHtml(n)+'</span>'}).join('')+'</div>';if(s.negativeList.length>0)ch+='<div class="chip-list negative-list">'+s.negativeList.map(function(n){return'<span class="chip-tag negative-tag">'+escapeHtml(n)+'</span>'}).join('')+'</div>';if(s.positiveList.length===0&&s.negativeList.length===0)ch='<div class="chip-list"><span class="no-chips">No chips</span></div>';card.innerHTML='<div class="summary-header"><span class="summary-name">'+escapeHtml(s.name)+'</span><span class="summary-amount '+ac+'">'+sign+'$'+formatMoney(Math.abs(s.netAmount))+'</span></div><div class="summary-chips-count"><span class="count-positive">+'+s.positiveCount+'</span> / <span class="count-negative">-'+s.negativeCount+'</span> = Net '+(s.netChips>=0?'+':'')+s.netChips+' chips</div>'+ch;sc.appendChild(card)}var ol=$('owes-list');ol.innerHTML='';if(result.payments.length===0){ol.innerHTML='<div class="no-payments">All square! No payments needed.</div>'}else{for(var i=0;i<result.payments.length;i++){var p=result.payments[i];var row=document.createElement('div');row.className='owes-row';row.innerHTML='<span class="owes-from">'+escapeHtml(p.from)+'</span><span class="owes-arrow">owes</span><span class="owes-to">'+escapeHtml(p.to)+'</span><span class="owes-amount">$'+formatMoney(p.amount)+'</span>';ol.appendChild(row)}}}
+function initSettlementScreen(){$('save-new-game-btn').addEventListener('click',function(){if(state.lastSettlement)saveGame(state.lastSettlement);resetGameState();showScreen('setup')});$('back-to-chips-btn').addEventListener('click',function(){renderGameScreen();showScreen('game')})}
+function loadHistory(){try{var stored=localStorage.getItem(STORAGE_KEY);if(stored)state.history=JSON.parse(stored)}catch(e){state.history=[]}}
+function saveHistory(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state.history))}catch(e){}}
+function saveGame(result){var rec={date:new Date().toISOString(),playerNames:state.playerNames.slice(0,state.playerCount),playerCount:state.playerCount,chipValue:state.chipValue,chips:JSON.parse(JSON.stringify(state.chips.slice(0,state.playerCount))),settlement:result};state.history.unshift(rec);saveHistory()}
+function renderHistory(){var lc=$('history-list');var es=$('history-empty');lc.innerHTML='';if(state.history.length===0){lc.classList.add('hidden');es.classList.remove('hidden');return}lc.classList.remove('hidden');es.classList.add('hidden');for(var gi=0;gi<state.history.length;gi++){var game=state.history[gi];var card=document.createElement('div');card.className='history-card';var dateStr=formatDate(game.date);var playersStr=game.playerNames.join(', ');var sr=document.createElement('div');sr.className='history-summary';sr.innerHTML='<div class="history-date">'+escapeHtml(dateStr)+'</div><div class="history-players">'+escapeHtml(playersStr)+'</div><div class="history-chip-value">$'+formatMoney(game.chipValue)+'/chip</div>';var det=document.createElement('div');det.className='history-details hidden';var dh='';if(game.settlement&&game.settlement.playerSummaries){for(var j=0;j<game.settlement.playerSummaries.length;j++){var ps=game.settlement.playerSummaries[j];var sign=ps.netAmount>=0?'+':'-';var ac=ps.netAmount>0?'amount-positive':ps.netAmount<0?'amount-negative':'amount-neutral';dh+='<div class="history-player-row"><span>'+escapeHtml(ps.name)+'</span><span class="'+ac+'">'+sign+'$'+formatMoney(Math.abs(ps.netAmount))+'</span></div>'}}if(game.settlement&&game.settlement.payments&&game.settlement.payments.length>0){dh+='<div class="history-payments-title">Payments:</div>';for(var j=0;j<game.settlement.payments.length;j++){var p=game.settlement.payments[j];dh+='<div class="history-payment-row">'+escapeHtml(p.from)+' owes '+escapeHtml(p.to)+' <strong>$'+formatMoney(p.amount)+'</strong></div>'}}else if(game.settlement){dh+='<div class="history-payment-row">All square!</div>'}det.innerHTML=dh;(function(d,c){sr.addEventListener('click',function(){d.classList.toggle('hidden');c.classList.toggle('expanded')})})(det,card);card.appendChild(sr);card.appendChild(det);lc.appendChild(card)}}
+function initHistoryScreen(){$('history-back-btn').addEventListener('click',function(){showScreen('setup')});$('clear-history-btn').addEventListener('click',function(){if(state.history.length===0)return;if(!confirm('Clear all game history? This cannot be undone.'))return;state.history=[];saveHistory();renderHistory()})}
+function resetGameState(){state.activePlayerIndex=0;state.chips=[{},{},{},{}];state.lastSettlement=null;for(var i=1;i<=4;i++)$('player-'+i+'-name').value='';$('chip-value').value='1';state.chipValue=1;state.playerCount=2;var cb=document.querySelectorAll('.count-btn');cb.forEach(function(b){b.classList.remove('selected');if(b.dataset.count==='2')b.classList.add('selected')});updatePlayerNameInputs(2)}
+function formatMoney(v){return Math.abs(v).toFixed(2)}
+function formatDate(iso){try{var d=new Date(iso);var mo=d.getMonth()+1;var dy=d.getDate();var yr=d.getFullYear();var hr=d.getHours();var mn=d.getMinutes();var ap=hr>=12?'PM':'AM';var h=hr%12||12;var m=mn<10?'0'+mn:mn;return mo+'/'+dy+'/'+yr+' '+h+':'+m+' '+ap}catch(e){return iso}}
+function escapeHtml(str){var div=document.createElement('div');div.textContent=str;return div.innerHTML}
+document.addEventListener('DOMContentLoaded',function(){loadHistory();initSetup();initGameScreen();initSettlementScreen();initHistoryScreen();showScreen('setup')});
+</script>
+</body>
+</html>
