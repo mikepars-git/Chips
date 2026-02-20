@@ -78,8 +78,10 @@ button,input{font-family:inherit;font-size:inherit}
 .chip-btn:active{transform:scale(0.94)}
 .chip-btn.positive.selected{background:var(--color-positive);color:var(--color-white);border-color:var(--color-positive);box-shadow:0 2px 8px rgba(5,150,105,0.3)}
 .chip-btn.negative.selected{background:var(--color-negative);color:var(--color-white);border-color:var(--color-negative);box-shadow:0 2px 8px rgba(220,38,38,0.3)}
-.chip-btn.taken{background:#f3f4f6;border-color:#d1d5db;color:#9ca3af;flex-direction:column;gap:2px}
-.chip-owner{font-size:0.65rem;font-weight:500;color:#9ca3af}
+.chip-btn.taken{flex-direction:column;gap:2px;opacity:0.85}
+.chip-btn.taken.positive{background:rgba(5,150,105,0.12);border-color:rgba(5,150,105,0.3);color:var(--color-positive)}
+.chip-btn.taken.negative{background:rgba(220,38,38,0.12);border-color:rgba(220,38,38,0.3);color:var(--color-negative)}
+.chip-owner{font-size:0.65rem;font-weight:600}
 .game-footer{position:sticky;bottom:0;background:var(--color-white);border-top:1px solid #e5e7eb;padding:12px 0 16px;margin:0 -16px;padding-left:16px;padding-right:16px;box-shadow:0 -2px 12px rgba(0,0,0,0.06);z-index:10}
 .running-tally{text-align:center;font-size:0.95rem;font-weight:600;color:var(--color-subtle-text);margin-bottom:10px}
 .running-tally strong{font-weight:800;font-size:1.05rem}
